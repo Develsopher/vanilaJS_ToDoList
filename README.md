@@ -48,5 +48,9 @@
 하나의 메인파일에서 모든 코드를 구현 및 관리하기 보다는 클래스와 관련된 함수들을 각 파일로 분리하여 `모듈화` 하였으며 가독성과 유지보수를 고려하였습니다.
 
 ## 배포 주소
-
+[배포사이트](https://zesty-kleicha-5f3e9f.netlify.app/)
 ## 시연 영상
+
+
+https://github.com/Develsopher/vanillaJS_ToDoList/assets/78126381/1da4f577-5b7f-4f5d-ab6f-b77c97edc87d
+

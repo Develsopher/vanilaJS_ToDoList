@@ -6,6 +6,7 @@ const addTodoTitle = $('#create-todo-title');
 
 export class UI {
   addList(todo) {
+    console.log('todo', todo);
     const item = document.createElement('div');
     item.classList.add('list-item');
     item.dataset.id = todo.id;
@@ -16,7 +17,7 @@ export class UI {
             }/>
             <span class="checkbox_icon"></span>
       </label>
-      <input type="text" class="todo-title" value=${todo.title} disabled />
+      <input value="${todo.title}" type="text" class="todo-title"  disabled/>
       <button class="edit-btn actions-btn">수정</button>
       <button class="delete-btn actions-btn">삭제</button>
       

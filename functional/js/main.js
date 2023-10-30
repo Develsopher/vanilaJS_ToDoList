@@ -1,7 +1,14 @@
 import { $, $$ } from './utils/dom.js';
 
 let state = {
-  todos: [],
+  todos: {
+    work: [],
+    travel: [],
+    fitness: [],
+    study: [],
+    project: [],
+  },
+  currentCategory: 'work',
 };
 
 const getTodosFromLocalStorage = () => {
@@ -13,8 +20,9 @@ const saveTodosToLocalStorage = (todos) => {
   localStorage.setItem('todos', JSON.stringify(todos));
 };
 
-const render = (todos) => {
-  const template = todos
+const render = () => {
+  const currentTodos = state.todos[state.currentCategory];
+  const template = currentTodos
     .map((todo, index) => {
       return `
       <div class="list-item" data-id="${index}">
@@ -34,7 +42,7 @@ const render = (todos) => {
   $('.list-items').innerHTML = template;
 
   // todo-count
-  $('.todo-count').textContent = todos.length;
+  $('.todo-count').textContent = state.todos[state.currentCategory].length;
 };
 
 // 비즈니스 로직
@@ -48,6 +56,7 @@ const addTodo = (todos, title) => {
 };
 
 const editTodo = (todos, index, newTitle) => {
+  console.log('todos', todos);
   return todos.map((todo, idx) => {
     if (idx === index) {
       return {
@@ -83,7 +92,10 @@ const addTodoList = () => {
     return;
   }
 
-  state.todos = addTodo(state.todos, $('#create-todo-title').value);
+  state.todos[state.currentCategory] = addTodo(
+    state.todos[state.currentCategory],
+    $('#create-todo-title').value,
+  );
   syncAndRender();
   $('#create-todo-title').value = '';
   // alert('등록되었습니다.');
@@ -108,7 +120,11 @@ const editTodoList = (e) => {
   );
 
   titleInput.addEventListener('blur', () => {
-    state.todos = editTodo(state.todos, index, titleInput.value);
+    state.todos[state.currentCategory] = editTodo(
+      state.todos[state.currentCategory],
+      index,
+      titleInput.value,
+    );
     syncAndRender();
   });
 };
@@ -117,7 +133,10 @@ const deleteTodoList = (e) => {
   const listItem = e.target.closest('div');
   const index = parseInt(listItem.dataset.id);
 
-  state.todos = removeTodo(state.todos, index);
+  state.todos[state.currentCategory] = removeTodo(
+    state.todos[state.currentCategory],
+    index,
+  );
   syncAndRender();
 };
 
@@ -125,13 +144,23 @@ const toggleTodoCompleted = (e) => {
   const listItem = e.target.closest('div');
   const index = parseInt(listItem.dataset.id);
 
-  state.todos = toggleTodo(state.todos, index);
+  state.todos[state.currentCategory] = toggleTodo(
+    state.todos[state.currentCategory],
+    index,
+  );
   syncAndRender();
 };
 
 const syncAndRender = () => {
   saveTodosToLocalStorage(state.todos);
-  render(state.todos);
+  render();
+};
+
+const setCurrentCategory = (state, newCategory) => {
+  return {
+    ...state,
+    currentCategory: newCategory,
+  };
 };
 
 // Event Listeners
@@ -156,13 +185,26 @@ $('.list-items').addEventListener('change', (e) => {
   }
 });
 
+// category 변경
+$$('.category').forEach((category) => {
+  category.addEventListener('click', (e) => {
+    const newCategory = e.target.dataset.categoryName;
+    $('.category.active').classList.remove('active');
+    e.target.classList.add('active');
+    $('.header-area h2').textContent = e.target.textContent;
+
+    state = setCurrentCategory(state, newCategory);
+    syncAndRender();
+  });
+});
+
 const init = () => {
   const todosFromLocalStorage = getTodosFromLocalStorage();
   state = {
     ...state,
     todos: todosFromLocalStorage,
   };
-  render(state.todos);
+  render();
 };
 
 document.addEventListener('DOMContentLoaded', init);

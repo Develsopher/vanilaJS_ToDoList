@@ -1,9 +1,6 @@
-// Class Definition
-export class Todo {
-  constructor(title, completed, category) {
-    this.id = new Date().getTime();
+export default class Todo {
+  constructor(title, completed) {
     this.title = title;
     this.completed = completed;
-    this.category = category || currentCategory;
   }
 }
